@@ -5,7 +5,7 @@ exports.onCreateNode = async ({
   actions,
   store,
   cache,
-  createNodeId,
+  createContentDigest,
 }) => {
   const { createNode } = actions;
 
@@ -17,7 +17,7 @@ exports.onCreateNode = async ({
         store,
         cache,
         createNode,
-        createNodeId,
+        createNodeId: createContentDigest,
       });
     } catch (e) {
       console.error('ERROR:', e);
