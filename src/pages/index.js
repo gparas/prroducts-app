@@ -1,18 +1,33 @@
 import React, { Component } from 'react';
 import chunk from 'lodash/chunk';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import Img from 'gatsby-image';
-import Layout from '../components/layout';
+import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+
 import SEO from '../components/seo';
+import Layout from '../components/layout';
 
 if (typeof window !== `undefined`) {
   window.postsToShow = 24;
 }
+
+const styles = {
+  card: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: '1 0 0%',
+  },
+  cardContent: {
+    flex: '1 1 auto',
+  },
+};
 
 class IndexPage extends Component {
   constructor() {
@@ -55,30 +70,42 @@ class IndexPage extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     let { allDemoProducts } = this.props.data;
     const products = allDemoProducts.edges.map(e => e.node);
     return (
       <Layout>
         <SEO title="Home" keywords={[`gatsby`, `application`, `react`]} />
-        <h1>Hi people</h1>
-        <p>Welcome to your new Gatsby site.</p>
-        <p>Now go build something great.</p>
+        <Typography variant="h3" component="h1">
+          <b>Daily inspiration, right in your face</b>
+        </Typography>
         {chunk(products.slice(0, this.state.postsToShow), 4).map((chunk, i) => (
-          <Grid container spacing={16} key={`chunk-${i}`}>
-            {chunk.map(node => {
-              return (
-                <Grid key={node.id} item md={3}>
-                  <Card>
-                    <CardContent>
-                      <Img fixed={node.localImage.childImageSharp.fixed} />
-                      <Typography align="center">{node.title}</Typography>
-                      <Typography align="center">{node.price}</Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
+          <div key={`chunk-${i}`} style={{ padding: 4 }}>
+            <Grid container spacing={8}>
+              {chunk.map(node => {
+                return (
+                  <Grid key={node.id} item md={3} style={{ display: 'flex' }}>
+                    <Card className={classes.card} elevation={0}>
+                      <CardActionArea
+                        component={Link}
+                        className={classes.cardContent}
+                        to={`/${node.id}`}
+                        state={{ showModal: true }}
+                      >
+                        <CardContent>
+                          <Img fixed={node.localImage.childImageSharp.fixed} />
+                          <Typography>{node.title}</Typography>
+                        </CardContent>
+                      </CardActionArea>
+                      <CardActions>
+                        <Typography>{node.price}</Typography>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </div>
         ))}
         {!this.state.showingMore && (
           <Button
@@ -118,4 +145,4 @@ export const pageQuery = graphql`
   }
 `;
 
-export default IndexPage;
+export default withStyles(styles)(IndexPage);
