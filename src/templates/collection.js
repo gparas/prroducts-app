@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import chunk from 'lodash/chunk';
 import { graphql } from 'gatsby';
 import Img from 'gatsby-image';
 import { withStyles } from '@material-ui/core/styles';
@@ -79,27 +78,21 @@ class Collection extends Component {
         <Typography variant="h3" component="h1">
           <b>{tag}</b>
         </Typography>
-        {chunk(products.slice(0, this.state.postsToShow), 4).map((chunk, i) => (
-          <div key={`chunk-${i}`} style={{ padding: 4 }}>
-            <Grid container spacing={8}>
-              {chunk.map(node => {
-                return (
-                  <Grid key={node.id} item md={3} style={{ display: 'flex' }}>
-                    <Card className={classes.card} elevation={0}>
-                      <CardContent>
-                        <Img fixed={node.localImage.childImageSharp.fixed} />
-                        <Typography>{node.title}</Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Typography>{node.price}</Typography>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                );
-              })}
+        <Grid container spacing={8}>
+          {products.slice(0, this.state.postsToShow).map(node => (
+            <Grid key={node.id} item md={3} style={{ display: 'flex' }}>
+              <Card className={classes.card} elevation={0}>
+                <CardContent>
+                  <Img fixed={node.localImage.childImageSharp.fixed} />
+                  <Typography>{node.title}</Typography>
+                </CardContent>
+                <CardActions>
+                  <Typography>{node.price}</Typography>
+                </CardActions>
+              </Card>
             </Grid>
-          </div>
-        ))}
+          ))}
+        </Grid>
         {!this.state.showingMore && (
           <Button
             onClick={() => {
