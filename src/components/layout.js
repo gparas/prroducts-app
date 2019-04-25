@@ -5,8 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import Header from './header';
 
-const Layout = props => {
-  console.log(props.location);
+const Layout = ({ children }) => {
   return (
     <StaticQuery
       query={graphql`
@@ -30,7 +29,7 @@ const Layout = props => {
               paddingTop: 0,
             }}
           >
-            <main>{props.children}</main>
+            <main>{children}</main>
             <footer>© {new Date().getFullYear()}</footer>
           </div>
         </Fragment>
