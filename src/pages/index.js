@@ -12,7 +12,7 @@ import SEO from '../components/seo';
 const IndexPage = props => {
   const data = props.data.allDemoProducts.group;
   return (
-    <Layout>
+    <Layout location={props.location}>
       <SEO title="Home" keywords={[`gatsby`, `application`, `react`]} />
       <Typography variant="h2" component="h1">
         Hi people
@@ -21,7 +21,7 @@ const IndexPage = props => {
         {data.map(tag => (
           <Grid key={tag.fieldValue} item md={4}>
             <Card>
-              <CardActionArea component={Link} to={`/${tag.fieldValue}`}>
+              <CardActionArea component={Link} to={`/${tag.fieldValue}/`}>
                 <CardContent>
                   <Typography>
                     {tag.fieldValue} {`(${tag.totalCount})`}

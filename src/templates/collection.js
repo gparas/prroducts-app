@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { graphql } from 'gatsby';
+import { graphql, Link } from 'gatsby';
 import Img from 'gatsby-image';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 
@@ -68,24 +69,40 @@ class Collection extends Component {
   }
 
   render() {
-    const { classes, pageContext, data } = this.props;
+    const { classes, pageContext, data, location } = this.props;
     const { tag } = pageContext;
     let { allDemoProducts } = data;
     const products = allDemoProducts.edges.map(e => e.node);
     return (
-      <Layout>
+      <Layout location={location}>
         <SEO title={tag} keywords={[`gatsby`, `application`, `react`]} />
         <Typography variant="h3" component="h1">
           <b>{tag}</b>
         </Typography>
         <Grid container spacing={8}>
           {products.slice(0, this.state.postsToShow).map(node => (
-            <Grid key={node.id} item md={3} style={{ display: 'flex' }}>
+            <Grid
+              key={node.id}
+              item
+              md={3}
+              sm={6}
+              xs={12}
+              style={{ display: 'flex' }}
+            >
               <Card className={classes.card} elevation={0}>
-                <CardContent>
-                  <Img fixed={node.localImage.childImageSharp.fixed} />
-                  <Typography>{node.title}</Typography>
-                </CardContent>
+                <CardActionArea
+                  component={Link}
+                  to={`/${node.collection}/${node.id}/`}
+                  state={{
+                    modal: true,
+                    modalBackgroundPath: node.collection,
+                  }}
+                >
+                  <CardContent>
+                    <Img fixed={node.localImage.childImageSharp.fixed} />
+                    <Typography>{node.title}</Typography>
+                  </CardContent>
+                </CardActionArea>
                 <CardActions>
                   <Typography>{node.price}</Typography>
                 </CardActions>
@@ -118,6 +135,7 @@ export const query = graphql`
           id
           title
           price
+          collection
           localImage {
             childImageSharp {
               fixed(width: 125, height: 125) {
