@@ -82,7 +82,7 @@ exports.createPages = ({ graphql, actions }) => {
 
     products.forEach(({ node }, index) => {
       createPage({
-        path: `/${slug(node.collection)}/${slug(node.id)}/`,
+        path: `/${slug(node.id)}/`,
         component: slash(productTemplate),
         context: {
           id: node.id,

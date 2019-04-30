@@ -92,7 +92,7 @@ class Collection extends Component {
               <Card className={classes.card} elevation={0}>
                 <CardActionArea
                   component={Link}
-                  to={`/${node.collection}/${node.id}/`}
+                  to={`/${node.id}/`}
                   state={{
                     modal: true,
                     modalBackgroundPath: node.collection,
