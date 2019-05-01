@@ -8,7 +8,6 @@ import Layout from '../components/layout';
 export default props => {
   const product = props.data.demoProducts;
   const { prev, next } = props.pageContext;
-  console.log(window.history.back);
   return (
     <Layout modalBackgroundPath={`/${product.category}/`} isModal={true}>
       <Img fixed={product.localImage.childImageSharp.fixed} />
