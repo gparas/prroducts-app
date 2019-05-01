@@ -39,7 +39,7 @@ const IndexPage = props => {
 export const pageQuery = graphql`
   query {
     allDemoProducts(limit: 2000) {
-      group(field: collection) {
+      group(field: category) {
         fieldValue
         totalCount
       }

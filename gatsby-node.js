@@ -1,7 +1,5 @@
 const _ = require(`lodash`);
 const path = require(`path`);
-const slug = require(`slug`);
-const slash = require(`slash`);
 const { createRemoteFileNode } = require(`gatsby-source-filesystem`);
 
 exports.onCreateNode = async ({
@@ -37,60 +35,75 @@ exports.onCreateNode = async ({
 exports.createPages = ({ graphql, actions }) => {
   const { createPage } = actions;
 
-  return graphql(
-    `
-      {
-        allDemoProducts(limit: 1000) {
-          edges {
-            node {
-              id
-              collection
+  return new Promise((resolve, reject) => {
+    const productPage = path.resolve('src/templates/product.js');
+    // const tagPage = path.resolve("src/templates/tag.jsx");
+    const categoryPage = path.resolve('src/templates/category.js');
+    resolve(
+      graphql(
+        `
+          {
+            allDemoProducts(limit: 1000) {
+              edges {
+                node {
+                  id
+                  category
+                }
+              }
             }
           }
+        `
+      ).then(result => {
+        if (result.errors) {
+          /* eslint no-console: "off" */
+          console.log(result.errors);
+          reject(result.errors);
         }
-      }
-    `
-  ).then(result => {
-    if (result.errors) {
-      throw result.errors;
-    }
 
-    const productTemplate = path.resolve(`src/templates/product.js`);
-    const collectionTemplate = path.resolve(`src/templates/collection.js`);
-    const products = result.data.allDemoProducts.edges;
+        // const tagSet = new Set();
+        const categorySet = new Set();
+        result.data.allDemoProducts.edges.forEach(edge => {
+          // if (edge.node.tags) {
+          //   edge.node.tags.forEach(tag => {
+          //     tagSet.add(tag);
+          //   });
+          // }
 
-    //All tags
-    let allTags = [];
-    // Iterate through each post, putting all found tags into `allTags array`
-    _.each(products, edge => {
-      if (_.get(edge, 'node.collection')) {
-        allTags = allTags.concat(edge.node.collection);
-      }
-    });
-    // Eliminate duplicate tags
-    allTags = _.uniq(allTags);
+          if (edge.node.category) {
+            categorySet.add(edge.node.category);
+          }
 
-    allTags.forEach((tag, index) => {
-      createPage({
-        path: `/${slug(tag)}/`,
-        component: collectionTemplate,
-        context: {
-          tag,
-        },
-      });
-    });
+          createPage({
+            path: edge.node.id,
+            component: productPage,
+            context: {
+              id: edge.node.id,
+            },
+          });
+        });
 
-    products.forEach(({ node }, index) => {
-      createPage({
-        path: `/${slug(node.id)}/`,
-        component: slash(productTemplate),
-        context: {
-          id: node.id,
-          prev: index === 0 ? null : products[index - 1],
-          next: index === result.length - 1 ? null : products[index + 1],
-        },
-      });
-    });
-    return;
+        // const tagList = Array.from(tagSet);
+        // tagList.forEach(tag => {
+        //   createPage({
+        //     path: `/tags/${_.kebabCase(tag)}/`,
+        //     component: tagPage,
+        //     context: {
+        //       tag
+        //     }
+        //   });
+        // });
+
+        const categoryList = Array.from(categorySet);
+        categoryList.forEach(category => {
+          createPage({
+            path: `/${_.kebabCase(category)}/`,
+            component: categoryPage,
+            context: {
+              category,
+            },
+          });
+        });
+      })
+    );
   });
 };

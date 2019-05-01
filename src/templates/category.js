@@ -13,10 +13,6 @@ import Button from '@material-ui/core/Button';
 import SEO from '../components/seo';
 import Layout from '../components/layout';
 
-if (typeof window !== `undefined`) {
-  window.postsToShow = 24;
-}
-
 const styles = {
   card: {
     display: 'flex',
@@ -28,59 +24,23 @@ const styles = {
   },
 };
 
-class Collection extends Component {
-  constructor() {
-    super();
-    let postsToShow = 24;
-    if (typeof window !== `undefined`) {
-      postsToShow = window.postsToShow;
-    }
-
-    this.state = {
-      showingMore: postsToShow > 24,
-      postsToShow,
-    };
-  }
-
-  update() {
-    const distanceToBottom =
-      document.documentElement.offsetHeight -
-      (window.scrollY + window.innerHeight);
-    if (this.state.showingMore && distanceToBottom < 100) {
-      this.setState({ postsToShow: this.state.postsToShow + 24 });
-    }
-    this.ticking = false;
-  }
-
-  handleScroll = () => {
-    if (!this.ticking) {
-      this.ticking = true;
-      requestAnimationFrame(() => this.update());
-    }
+class Category extends Component {
+  state = {
+    productsToShow: 12,
   };
-
-  componentDidMount() {
-    window.addEventListener(`scroll`, this.handleScroll);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener(`scroll`, this.handleScroll);
-    window.postsToShow = this.state.postsToShow;
-  }
-
   render() {
-    const { classes, pageContext, data, location } = this.props;
-    const { tag } = pageContext;
-    let { allDemoProducts } = data;
-    const products = allDemoProducts.edges.map(e => e.node);
+    const { data, pageContext, classes } = this.props;
+    const { productsToShow } = this.state;
+    const { category } = pageContext;
+    let products = data.allDemoProducts.edges;
     return (
-      <Layout location={location}>
-        <SEO title={tag} keywords={[`gatsby`, `application`, `react`]} />
+      <Layout>
+        <SEO title={category} keywords={[`gatsby`, `application`, `react`]} />
         <Typography variant="h3" component="h1">
-          <b>{tag}</b>
+          <b>{category}</b>
         </Typography>
         <Grid container spacing={8}>
-          {products.slice(0, this.state.postsToShow).map(node => (
+          {products.slice(0, productsToShow).map(({ node }) => (
             <Grid
               key={node.id}
               item
@@ -95,7 +55,7 @@ class Collection extends Component {
                   to={`/${node.id}/`}
                   state={{
                     modal: true,
-                    modalBackgroundPath: node.collection,
+                    modalBackgroundPath: node.category,
                   }}
                 >
                   <CardContent>
@@ -110,12 +70,12 @@ class Collection extends Component {
             </Grid>
           ))}
         </Grid>
-        {!this.state.showingMore && (
+        {productsToShow < products.length && (
           <Button
+            tag="button"
             onClick={() => {
               this.setState({
-                postsToShow: this.state.postsToShow + 24,
-                showingMore: true,
+                productsToShow: productsToShow + 12,
               });
             }}
           >
@@ -127,19 +87,20 @@ class Collection extends Component {
   }
 }
 
-export const query = graphql`
-  query($tag: String!) {
-    allDemoProducts(limit: 2000, filter: { collection: { eq: $tag } }) {
+export const pageQuery = graphql`
+  query CategoryPage($category: String) {
+    allDemoProducts(limit: 1000, filter: { category: { eq: $category } }) {
+      totalCount
       edges {
         node {
           id
           title
           price
-          collection
+          category
           localImage {
             childImageSharp {
               fixed(width: 125, height: 125) {
-                ...GatsbyImageSharpFixed_withWebp
+                ...GatsbyImageSharpFixed_withWebp_tracedSVG
               }
             }
           }
@@ -149,4 +110,4 @@ export const query = graphql`
   }
 `;
 
-export default withStyles(styles)(Collection);
+export default withStyles(styles)(Category);

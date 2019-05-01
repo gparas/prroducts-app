@@ -8,8 +8,9 @@ import Layout from '../components/layout';
 export default props => {
   const product = props.data.demoProducts;
   const { prev, next } = props.pageContext;
+  console.log(window.history.back);
   return (
-    <Layout modalBackgroundPath={`/${product.collection}/`} isModal={true}>
+    <Layout modalBackgroundPath={`/${product.category}/`} isModal={true}>
       <Img fixed={product.localImage.childImageSharp.fixed} />
       <Typography gutterBottom variant="h6" component="h3">
         {product.title}
@@ -26,7 +27,7 @@ export const pageQuery = graphql`
     demoProducts(id: { eq: $id }) {
       title
       price
-      collection
+      category
       localImage {
         childImageSharp {
           fixed(width: 125, height: 125) {
