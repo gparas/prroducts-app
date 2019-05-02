@@ -9,7 +9,11 @@ export default props => {
   const product = props.data.demoProducts;
   const { prev, next } = props.pageContext;
   return (
-    <Layout modalBackgroundPath={`/${product.category}/`} isModal={true}>
+    <Layout
+      modalBackgroundPath={`/${product.category}/`}
+      isModal={true}
+      location={props.location}
+    >
       <Img fixed={product.localImage.childImageSharp.fixed} />
       <Typography gutterBottom variant="h6" component="h3">
         {product.title}

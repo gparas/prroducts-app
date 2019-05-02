@@ -29,12 +29,12 @@ class Category extends Component {
     productsToShow: 12,
   };
   render() {
-    const { data, pageContext, classes } = this.props;
+    const { data, pageContext, classes, location } = this.props;
     const { productsToShow } = this.state;
     const { category } = pageContext;
     let products = data.allDemoProducts.edges;
     return (
-      <Layout>
+      <Layout location={location}>
         <SEO title={category} keywords={[`gatsby`, `application`, `react`]} />
         <Typography variant="h3" component="h1">
           <b>{category}</b>

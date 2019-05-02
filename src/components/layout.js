@@ -1,24 +1,21 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
-import { navigate, PageRenderer } from 'gatsby';
+import { PageRenderer } from 'gatsby';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Dialog from '@material-ui/core/Dialog';
 
+import Modal from './modal';
 import Header from './header';
 
 class Layout extends Component {
-  handleCloseModal = () => {
-    navigate(this.props.modalBackgroundPath);
-  };
   render() {
-    const { children, modalBackgroundPath, isModal } = this.props;
+    const { children, modalBackgroundPath, isModal, location } = this.props;
     if (isModal) {
       return (
         <Fragment>
           <PageRenderer location={{ pathname: modalBackgroundPath }} />
-          <Dialog open onClose={this.handleCloseModal}>
+          <Modal location={location} modalBackgroundPath={modalBackgroundPath}>
             {children}
-          </Dialog>
+          </Modal>
         </Fragment>
       );
     }
