@@ -1,10 +1,28 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 import { PageRenderer } from 'gatsby';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { Global } from '@emotion/core';
+import { typography, colors } from '../utils/tokens';
 
 import Modal from './modal';
 import Header from './header';
+
+const globalStyles = {
+  html: {
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale',
+    boxSizing: 'border-box',
+  },
+  '*, *::before, *::after': {
+    boxSizing: 'inherit',
+  },
+  body: {
+    margin: 0,
+    color: colors.text.primary,
+    ...typography.body2,
+    backgroundColor: colors.background.default,
+  },
+};
 
 class Layout extends Component {
   render() {
@@ -21,7 +39,7 @@ class Layout extends Component {
     }
     return (
       <Fragment>
-        <CssBaseline />
+        <Global styles={globalStyles} />
         <Header siteTitle="Demo" />
         <div
           style={{

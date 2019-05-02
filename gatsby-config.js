@@ -6,6 +6,7 @@ module.exports = {
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-emotion`,
     {
       resolve: `gatsby-transformer-json`,
       options: {
@@ -25,14 +26,6 @@ module.exports = {
         name: `data`,
         path: `${__dirname}/src/data/`,
         ignore: [`**/\.*`], // ignore files starting with a dot
-      },
-    },
-    {
-      resolve: 'gatsby-plugin-web-font-loader',
-      options: {
-        google: {
-          families: ['Roboto:300,400,500', 'Open Sans:800'],
-        },
       },
     },
     `gatsby-transformer-sharp`,
